@@ -2,11 +2,12 @@ package render
 
 import (
 	"fmt"
-	"github.com/gertd/go-pluralize"
 	"go/format"
 	"strconv"
 	"strings"
 	"unicode"
+
+	"github.com/gertd/go-pluralize"
 )
 
 type GenStructRender struct{}
@@ -25,7 +26,7 @@ func (r *GenStructRender) RenderFacade(tableDataTypes map[string]map[string]map[
 		singleEntityName := fmtFieldName(stringifyFirstChar(single))
 		pluralEntityName := fmtFieldName(stringifyFirstChar(tableName))
 		pR := r.packageRender("entity")
-		sR := r.structRender(columnTypes, columnsSorted, pluralEntityName)
+		sR := r.structRender(columnTypes, columnsSorted, singleEntityName)
 		dR := r.dtoRender(singleEntityName, columnsSorted)
 		dsR := r.dtosRender(singleEntityName, pluralEntityName)
 		src := pR + sR + dR + dsR
@@ -53,6 +54,9 @@ func (r *GenStructRender) dtoRender(entityName string, columnsSorted []string) s
 	dtoBody := fmt.Sprintf("r := &result.%s{}", entityName)
 
 	for _, key := range columnsSorted {
+		if key == "deleted_at" {
+			continue
+		}
 		leftFieldName := fmtFieldName(stringifyFirstChar(key))
 		rightFieldName := fmtFieldName(stringifyFirstChar(key))
 		if rightFieldName == "CreatedAt" || rightFieldName == "UpdatedAt" {
@@ -66,11 +70,11 @@ func (r *GenStructRender) dtoRender(entityName string, columnsSorted []string) s
 
 func (_ *GenStructRender) dtosRender(singleEntityName, pluralEntityName string) string {
 	dtosBody := fmt.Sprintf("var res []*result.%s\n\n", singleEntityName)
-	dtosBody += "for _, e := range ee {\n"
-	dtosBody += fmt.Sprintf("res = append(res, ToResult%s(&e))\n", singleEntityName)
+	dtosBody += "for _, e := range es {\n"
+	dtosBody += fmt.Sprintf("res = append(res, ToResult%s(e))\n", singleEntityName)
 	dtosBody += "}\n\n"
 	dtosBody += "return res\n"
-	return fmt.Sprintf("func ToResult%s(ee []*%s) []*result.%s {\n%s}\n\n", pluralEntityName, singleEntityName, singleEntityName, dtosBody)
+	return fmt.Sprintf("func ToResult%s(es []*%s) []*result.%s {\n%s}\n\n", pluralEntityName, singleEntityName, singleEntityName, dtosBody)
 }
 
 func generateMysqlTypes(obj map[string]map[string]string, columnsSorted []string, depth int, jsonAnnotation bool, gormAnnotation bool, gureguTypes bool) string {
