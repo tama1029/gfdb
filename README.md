@@ -15,9 +15,13 @@ Output gorm struct and dto.
 
 `mkdir example`
 
-* gen from database
+* gen struct from database
 
 `gfdb struct --host 127.0.0.1 --port 3306 --database development --user root`
+
+* gen result from database
+
+`gfdb result --host 127.0.0.1 --port 3306 --database development --user root`
 
 ## Acknowledgments
 
