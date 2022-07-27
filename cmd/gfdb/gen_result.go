@@ -5,7 +5,7 @@ import (
 	"github.com/tama1029/gfdb/gen"
 )
 
-func GenStructCmd() *cobra.Command {
+func GenResultCmd() *cobra.Command {
 	var host string
 	var port int
 	var user string
@@ -14,10 +14,10 @@ func GenStructCmd() *cobra.Command {
 	var outputd string
 
 	cmd := &cobra.Command{
-		Use:   "struct",
-		Short: "struct from database",
+		Use:   "result",
+		Short: "result from database",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			gs, err := gen.NewGenStruct(host, user, pass, database, port, outputd)
+			gs, err := gen.NewGenResult(host, user, pass, database, port, outputd)
 			if err != nil {
 				return err
 			}

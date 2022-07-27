@@ -7,39 +7,39 @@ import (
 	"github.com/tama1029/gfdb/render"
 )
 
-type GenStruct struct {
+type GenResult struct {
 	tableInfo       *db.TableInfo
-	genStructRender *render.GenStructRender
-	genStructOutput *output.GenOutput
+	GenResultRender *render.GenResultRender
+	GenResultOutput *output.GenOutput
 }
 
-func NewGenStruct(host, user, pass, database string, port int, outputd string) (*GenStruct, error) {
+func NewGenResult(host, user, pass, database string, port int, outputd string) (*GenResult, error) {
 	c, err := client.NewClient(user, pass, host, database, port)
 	if err != nil {
 		return nil, err
 	}
 	ti := db.NewTableInfo(c)
-	gsr := render.NewGenStructRender()
+	gsr := render.NewGenResultRender()
 	gso := output.NewGenOutput(outputd)
-	return &GenStruct{
+	return &GenResult{
 		tableInfo:       ti,
-		genStructRender: gsr,
-		genStructOutput: gso,
+		GenResultRender: gsr,
+		GenResultOutput: gso,
 	}, nil
 }
 
-func (g GenStruct) Generate(database string) error {
+func (g GenResult) Generate(database string) error {
 	tableDataTypes, tableNamesSorted, err := g.tableInfo.GetTableInfo(database)
 	if err != nil {
 		return err
 	}
 
-	renders, err := g.genStructRender.RenderFacade(tableDataTypes, tableNamesSorted)
+	renders, err := g.GenResultRender.RenderFacade(tableDataTypes, tableNamesSorted)
 	if err != nil {
 		return err
 	}
 
-	err = g.genStructOutput.ToFile(renders, "entity")
+	err = g.GenResultOutput.ToFile(renders, "result")
 	if err != nil {
 		return err
 	}
