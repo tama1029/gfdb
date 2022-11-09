@@ -2,7 +2,7 @@ name: release
 on:
   push:
     tags:
-      - feature/release-test
+      - test1
 jobs:
   goreleaser:
     runs-on: ubuntu-latest
