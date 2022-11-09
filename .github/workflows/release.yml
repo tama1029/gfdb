@@ -2,7 +2,8 @@ name: release
 on:
   push:
     tags:
-      - "v[0-9]+.[0-9]+.[0-9]+"
+      - feature/release-test
+#      - "v[0-9]+.[0-9]+.[0-9]+"
 jobs:
   goreleaser:
     runs-on: ubuntu-latest
@@ -16,7 +17,7 @@ jobs:
         with:
           go-version: 1.13
       - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@v1
+        uses: goreleaser/goreleaser-action@v3
         with:
           version: latest
           args: release --rm-dist
