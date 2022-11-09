@@ -29,7 +29,7 @@ func NewGenResult(host, user, pass, database string, port int, outputd string) (
 }
 
 func (g GenResult) Generate(database string) error {
-	tableDataTypes, tableNamesSorted, err := g.tableInfo.GetTableInfo(database)
+	tableDataTypes, tableNamesSorted, err := g.tableInfo.GetColumnInfo(database)
 	if err != nil {
 		return err
 	}

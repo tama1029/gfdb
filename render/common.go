@@ -78,6 +78,84 @@ func mysqlTypeToGoType(key string, mysqlType string, columnType string, nullable
 	return ""
 }
 
+func mysqlTypeToGoaType(key string, mysqlType string, columnType string, nullable bool, gureguTypes bool, isResult bool) string {
+	switch mysqlType {
+	case "tinyint", "int", "smallint", "mediumint":
+		if strings.Contains(columnType, "tinyint(1)") {
+			return goaBool
+		}
+		return goaInt
+	case "bigint":
+		if strings.Contains(columnType, "unsigned") {
+			return goaUInt64
+		}
+		return goaInt64
+	case "char", "enum", "varchar", "longtext", "mediumtext", "text", "tinytext", "json":
+		return goaString
+	case "date", "datetime", "time", "timestamp":
+		if key == "created_at" && isResult {
+			return goaString
+		}
+		if key == "updated_at" && isResult {
+			return goaString
+		}
+		if key == "deleted_at" {
+			return goaAny
+		}
+		return goaString
+	case "decimal", "double":
+		return goaFloat64
+	case "float":
+		return goaFloat32
+	case "binary", "blob", "longblob", "mediumblob", "varbinary":
+		return goaBytes
+	}
+	return ""
+}
+
+func mysqlTypeToGoaExample(key string, mysqlType string, columnType string, nullable bool, gureguTypes bool, isResult bool) interface{} {
+	//loc, _ := time.LoadLocation("Asia/Tokyo")
+	//Example(time.Date(2019, 3, 1, 0, 0, 0, 0, loc).Format(time.RFC3339))
+	//Format(FormatDateTime)
+	switch mysqlType {
+	case "tinyint", "int", "smallint", "mediumint":
+		if strings.Contains(columnType, "tinyint(1)") {
+			return "Example(true)"
+		}
+		return "Example(1)"
+	case "bigint":
+		return "Example(1)"
+	case "char", "enum", "varchar", "longtext", "mediumtext", "text", "tinytext", "json":
+		return "Example(\"\")"
+	case "date", "datetime", "time", "timestamp":
+		if key == "created_at" {
+			return `loc, _ := time.LoadLocation("Asia/Tokyo")
+Example(time.Date(2019, 3, 1, 0, 0, 0, 0, loc).Format(time.RFC3339))
+Format(FormatDateTime)
+`
+		}
+		if key == "updated_at" {
+			return `loc, _ := time.LoadLocation("Asia/Tokyo")
+Example(time.Date(2019, 3, 1, 0, 0, 0, 0, loc).Format(time.RFC3339))
+Format(FormatDateTime)
+`
+		}
+		if key == "deleted_at" {
+			return `loc, _ := time.LoadLocation("Asia/Tokyo")
+Example(time.Date(2019, 3, 1, 0, 0, 0, 0, loc).Format(time.RFC3339))
+`
+		}
+		return goaString
+	case "decimal", "double":
+		return "Example(1.1)"
+	case "float":
+		return "Example(1.1)"
+	case "binary", "blob", "longblob", "mediumblob", "varbinary":
+		return "Example(\"\")"
+	}
+	return ""
+}
+
 func fmtFieldName(s string) string {
 	name := lintFieldName(s)
 	runes := []rune(name)
@@ -250,4 +328,18 @@ const (
 	gormDeletedAt    = "gorm.DeletedAt"
 	// result
 	resultGormDeletedAt = "interface{}"
+
+	// goa
+	goaBool    = "Boolean"
+	goaInt     = "Int"
+	goaInt32   = "Int32"
+	goaInt64   = "Int64"
+	goaUInt    = "UInt"
+	goaUInt32  = "UInt32"
+	goaUInt64  = "UInt64"
+	goaFloat32 = "Float32"
+	goaFloat64 = "Float64"
+	goaString  = "String"
+	goaBytes   = "Bytes"
+	goaAny     = "Any"
 )
