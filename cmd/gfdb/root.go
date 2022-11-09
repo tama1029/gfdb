@@ -10,6 +10,8 @@ func init() {
 	RootCmd.AddCommand(
 		GenStructCmd(),
 		GenResultCmd(),
+		GenGoaTypeCmd(),
+		GenGoaResultTypeCmd(),
 	)
 }
 

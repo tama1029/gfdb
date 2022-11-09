@@ -23,6 +23,14 @@ Output gorm struct and dto.
 
 `gfdb result --host 127.0.0.1 --port 3306 --database development --user root`
 
+* gen goa_result_type from database
+
+`gfdb goa_result_type --host 127.0.0.1 --port 3306 --database development --user root`
+
+* gen goa_type from database
+
+`gfdb goa_type --host 127.0.0.1 --port 3306 --database development --user root`
+
 ## Acknowledgments
 
 Inspired by `Shelnutt2/db2struct`.

@@ -13,7 +13,31 @@ func NewTableInfo(c *client.Client) *TableInfo {
 	return &TableInfo{c: c}
 }
 
-func (co *TableInfo) GetTableInfo(databaseName string) (map[string]map[string]map[string]string, map[string][]string, error) {
+func (co *TableInfo) GetTableInfo(databaseName string) (map[string]string, error) {
+	tableInfo := map[string]string{}
+
+	tableDataTypeQuery := "SELECT TABLE_NAME, TABLE_COMMENT FROM INFORMATION_SCHEMA.TABLES where TABLE_SCHEMA = ? order by TABLE_NAME"
+
+	rows, err := co.c.Db.Query(tableDataTypeQuery, databaseName)
+	if err != nil {
+		return nil, err
+	}
+	if rows != nil {
+		defer rows.Close()
+	} else {
+		return nil, err
+	}
+
+	for rows.Next() {
+		var table string
+		var comment string
+		rows.Scan(&table, &comment)
+		tableInfo[table] = comment
+	}
+	return tableInfo, nil
+}
+
+func (co *TableInfo) GetColumnInfo(databaseName string) (map[string]map[string]map[string]string, map[string][]string, error) {
 	tableNamesSorted := map[string][]string{}
 
 	tableDataTypes := make(map[string]map[string]map[string]string)
