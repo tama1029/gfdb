@@ -31,7 +31,7 @@ func mysqlTypeToGoType(key string, mysqlType string, columnType string, nullable
 			return golangUInt64
 		}
 		return golangInt64
-	case "char", "enum", "varchar", "longtext", "mediumtext", "text", "tinytext", "json":
+	case "char", "enum", "varchar", "longtext", "mediumtext", "text", "tinytext", "json", "point":
 		if nullable {
 			if gureguTypes {
 				return gureguNullString
@@ -90,7 +90,7 @@ func mysqlTypeToGoaType(key string, mysqlType string, columnType string, nullabl
 			return goaUInt64
 		}
 		return goaInt64
-	case "char", "enum", "varchar", "longtext", "mediumtext", "text", "tinytext", "json":
+	case "char", "enum", "varchar", "longtext", "mediumtext", "text", "tinytext", "json", "point":
 		return goaString
 	case "date", "datetime", "time", "timestamp":
 		if key == "created_at" && isResult {
@@ -125,7 +125,7 @@ func mysqlTypeToGoaExample(key string, mysqlType string, columnType string, null
 		return "Example(1)"
 	case "bigint":
 		return "Example(1)"
-	case "char", "enum", "varchar", "longtext", "mediumtext", "text", "tinytext", "json":
+	case "char", "enum", "varchar", "longtext", "mediumtext", "text", "tinytext", "json", "point":
 		return "Example(\"\")"
 	case "date", "datetime", "time", "timestamp":
 		if key == "created_at" {
